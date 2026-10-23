@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Star, Calendar, Edit2, Trash2, Film } from 'lucide-react';
+import { Calendar, Edit2, Trash2, Film, Clock, Flame } from 'lucide-react';
 import { WatchlistItem, WatchStatus } from '../types/watchlist';
+import { getDaysLeft } from '../utils/dateUtils';
 
 interface WatchCardProps {
   item: WatchlistItem;
@@ -16,22 +17,8 @@ export const WatchCard: React.FC<WatchCardProps> = ({
   onUpdateStatus,
 }) => {
   const [imageError, setImageError] = useState(false);
-
-  // Category Accent
-  const getCategoryColor = (category: string) => {
-    switch (category?.toLowerCase()) {
-      case 'anime':
-        return 'bg-pink-500/15 text-pink-300 border-pink-500/30';
-      case 'bollywood':
-        return 'bg-orange-500/15 text-orange-300 border-orange-500/30';
-      case 'hollywood':
-        return 'bg-cyan-500/15 text-cyan-300 border-cyan-500/30';
-      case 'series':
-        return 'bg-violet-500/15 text-violet-300 border-violet-500/30';
-      default:
-        return 'bg-slate-800 text-slate-300 border-slate-700';
-    }
-  };
+  const daysInfo = getDaysLeft(item.releaseDate);
+  const isUpcoming = item.status?.toLowerCase() === 'upcoming';
 
   const formattedRelease = item.releaseDate
     ? new Date(item.releaseDate).getFullYear() || item.releaseDate
@@ -39,7 +26,7 @@ export const WatchCard: React.FC<WatchCardProps> = ({
 
   return (
     <div className="group relative bg-slate-900/90 rounded-xl overflow-hidden border border-slate-800 hover:border-slate-700 transition-all duration-300 flex flex-col shadow-md hover:shadow-xl hover:shadow-indigo-500/5 hover:-translate-y-0.5">
-      {/* Clean Cover Media Section (Badges removed from image) */}
+      {/* Cover Media Section */}
       <div className="relative aspect-[16/10] sm:aspect-[3/4] w-full overflow-hidden bg-slate-950 flex items-center justify-center">
         {item.coverUrl && !imageError ? (
           <img
@@ -60,7 +47,7 @@ export const WatchCard: React.FC<WatchCardProps> = ({
           </div>
         )}
 
-        {/* Quick Edit/Delete on Hover only */}
+        {/* Quick Edit/Delete on Hover */}
         <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
           <button
             onClick={() => onEdit(item)}
@@ -79,36 +66,50 @@ export const WatchCard: React.FC<WatchCardProps> = ({
         </div>
       </div>
 
-      {/* Below Part: Badges, Details, and Controls */}
+      {/* Details Section */}
       <div className="p-3.5 flex-1 flex flex-col justify-between gap-2.5">
-        <div>
-          {/* Top Row: Category and Rating moved below image */}
-          <div className="flex items-center justify-between gap-1.5 mb-1.5">
-            <span className={`text-[10px] font-semibold px-2 py-0.5 rounded border uppercase tracking-wider ${getCategoryColor(item.category)}`}>
-              {item.category}
-            </span>
-
-            <div className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-slate-950 border border-amber-500/30 text-amber-300 text-xs font-bold">
-              <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
-              <span>{typeof item.rating === 'number' && item.rating > 0 ? item.rating : '—'}</span>
-            </div>
-          </div>
-
+        <div className="space-y-1.5">
           {/* Title */}
           <h3 className="font-semibold text-sm text-slate-100 line-clamp-1 group-hover:text-indigo-400 transition" title={item.title}>
             {item.title}
           </h3>
 
-          {/* Genre & Release Date */}
-          <div className="flex items-center justify-between text-xs text-slate-400 mt-1">
-            <span className="truncate">{item.genre || 'General'}</span>
-            {formattedRelease && (
-              <span className="flex items-center gap-1 text-[11px] text-slate-400 flex-shrink-0">
-                <Calendar className="w-3 h-3 text-slate-500" />
-                {formattedRelease}
-              </span>
-            )}
-          </div>
+          {/* Release Date */}
+          {item.releaseDate ? (
+            <div className="flex items-center gap-1.5 text-xs text-slate-400">
+              <Calendar className="w-3.5 h-3.5 text-slate-500 flex-shrink-0" />
+              <span>{item.releaseDate}</span>
+            </div>
+          ) : (
+            <div className="text-xs text-slate-500">No release date</div>
+          )}
+
+          {/* Days Left Countdown Feature (especially for upcoming series and movies) */}
+          {daysInfo && (
+            <div className="pt-0.5">
+              {daysInfo.isToday ? (
+                <div className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30">
+                  <Flame className="w-3 h-3 text-emerald-400 animate-pulse" />
+                  <span>Releasing Today!</span>
+                </div>
+              ) : !daysInfo.isPast ? (
+                <div
+                  className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded border ${
+                    isUpcoming
+                      ? 'text-purple-300 bg-purple-500/15 border-purple-500/30'
+                      : 'text-amber-300 bg-amber-500/15 border-amber-500/30'
+                  }`}
+                >
+                  <Clock className="w-3 h-3" />
+                  <span>{daysInfo.text}</span>
+                </div>
+              ) : (
+                <div className="text-[11px] text-slate-500">
+                  {daysInfo.text}
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Quick Status Selector */}

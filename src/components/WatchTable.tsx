@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Star, Edit2, Trash2, Film, Calendar } from 'lucide-react';
+import { Edit2, Trash2, Film, Calendar, Clock, Flame } from 'lucide-react';
 import { WatchlistItem, WatchStatus } from '../types/watchlist';
+import { getDaysLeft } from '../utils/dateUtils';
 
 interface WatchTableProps {
   items: WatchlistItem[];
@@ -22,11 +23,8 @@ export const WatchTable: React.FC<WatchTableProps> = ({
           <thead className="bg-slate-950/80 text-[11px] uppercase tracking-wider text-slate-400 border-b border-slate-800">
             <tr>
               <th className="py-3 px-4">Title & Poster</th>
-              <th className="py-3 px-3">Category</th>
               <th className="py-3 px-3">Status</th>
-              <th className="py-3 px-3">Rating</th>
-              <th className="py-3 px-3">Genre</th>
-              <th className="py-3 px-3">Release Date</th>
+              <th className="py-3 px-3">Release & Days Left</th>
               <th className="py-3 px-4 text-right">Actions</th>
             </tr>
           </thead>
@@ -54,23 +52,8 @@ const TableRow: React.FC<{
   onUpdateStatus: (id: string, newStatus: WatchStatus) => void;
 }> = ({ item, onEdit, onDelete, onUpdateStatus }) => {
   const [imageError, setImageError] = useState(false);
-
-  const getStatusBadge = (status: string) => {
-    switch (status?.toLowerCase()) {
-      case 'completed':
-        return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
-      case 'watching':
-        return 'bg-amber-500/10 text-amber-400 border-amber-500/20';
-      case 'upcoming':
-        return 'bg-purple-500/10 text-purple-400 border-purple-500/20';
-      case 'plan to watch':
-        return 'bg-blue-500/10 text-blue-400 border-blue-500/20';
-      case 'dropped':
-        return 'bg-rose-500/10 text-rose-400 border-rose-500/20';
-      default:
-        return 'bg-slate-800 text-slate-400 border-slate-700';
-    }
-  };
+  const daysInfo = getDaysLeft(item.releaseDate);
+  const isUpcoming = item.status?.toLowerCase() === 'upcoming';
 
   return (
     <tr className="hover:bg-slate-800/40 transition">
@@ -92,16 +75,11 @@ const TableRow: React.FC<{
           </div>
           <div>
             <div className="font-semibold text-slate-100 text-sm">{item.title}</div>
-            <div className="text-[11px] text-slate-400">Added: {item.createdAt ? new Date(item.createdAt).toLocaleDateString() : '—'}</div>
+            <div className="text-[11px] text-slate-400">
+              Added: {item.createdAt ? new Date(item.createdAt).toLocaleDateString() : '—'}
+            </div>
           </div>
         </div>
-      </td>
-
-      {/* Category */}
-      <td className="py-2.5 px-3">
-        <span className="text-xs font-semibold px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700">
-          {item.category}
-        </span>
       </td>
 
       {/* Status & Quick Change */}
@@ -109,7 +87,7 @@ const TableRow: React.FC<{
         <select
           value={item.status}
           onChange={e => onUpdateStatus(item.id, e.target.value as WatchStatus)}
-          className={`text-xs rounded-md px-2 py-1 border font-medium focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer ${getStatusBadge(item.status)}`}
+          className="text-xs rounded-md px-2.5 py-1 bg-slate-950 border border-slate-700 text-slate-200 font-medium focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer"
         >
           <option value="Upcoming" className="bg-slate-900 text-slate-200">Upcoming</option>
           <option value="Watching" className="bg-slate-900 text-slate-200">Watching</option>
@@ -119,28 +97,42 @@ const TableRow: React.FC<{
         </select>
       </td>
 
-      {/* Rating */}
-      <td className="py-2.5 px-3">
-        <div className="flex items-center gap-1 text-amber-400 font-bold">
-          <Star className="w-3.5 h-3.5 fill-amber-400" />
-          <span>{typeof item.rating === 'number' && item.rating > 0 ? `${item.rating}/10` : '—'}</span>
-        </div>
-      </td>
-
-      {/* Genre */}
-      <td className="py-2.5 px-3 text-slate-400">
-        {item.genre || 'General'}
-      </td>
-
-      {/* Release Date */}
-      <td className="py-2.5 px-3 text-slate-400 whitespace-nowrap">
+      {/* Release Date & Days Left */}
+      <td className="py-2.5 px-3 whitespace-nowrap">
         {item.releaseDate ? (
-          <div className="flex items-center gap-1.5">
-            <Calendar className="w-3 h-3 text-slate-500" />
-            <span>{item.releaseDate}</span>
+          <div className="space-y-1">
+            <div className="flex items-center gap-1.5 text-slate-300">
+              <Calendar className="w-3.5 h-3.5 text-slate-400" />
+              <span>{item.releaseDate}</span>
+            </div>
+
+            {/* Days Left indicator */}
+            {daysInfo && (
+              <div className="flex items-center gap-1">
+                {daysInfo.isToday ? (
+                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/30">
+                    <Flame className="w-3 h-3 text-emerald-400 animate-pulse" />
+                    {daysInfo.text}
+                  </span>
+                ) : !daysInfo.isPast ? (
+                  <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded border ${
+                    isUpcoming
+                      ? 'text-purple-300 bg-purple-500/15 border-purple-500/30'
+                      : 'text-amber-300 bg-amber-500/15 border-amber-500/30'
+                  }`}>
+                    <Clock className="w-3 h-3" />
+                    {daysInfo.text}
+                  </span>
+                ) : (
+                  <span className="text-[11px] text-slate-400">
+                    {daysInfo.text}
+                  </span>
+                )}
+              </div>
+            )}
           </div>
         ) : (
-          '—'
+          <span className="text-slate-400">No release date</span>
         )}
       </td>
 
