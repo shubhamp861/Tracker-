@@ -1,0 +1,54 @@
+[
+  {
+    "id": "local_added_1783255628083",
+    "title": "Kalki_2",
+    "category": "Bollywood",
+    "status": "Upcoming",
+    "genre": "General",
+    "rating": 0,
+    "coverUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSuUZQYg5sp1eezcgnZnqJ0IEuBMFr-cUE62Y2tBvOM2w&s=10",
+    "createdAt": "2026-07-05T12:47:08.084Z",
+    "releaseDate": "2027-12-01"
+  },
+  {
+    "id": "local_added_1783264185142",
+    "title": "Tumbbad",
+    "category": "Bollywood",
+    "status": "Completed",
+    "genre": "General",
+    "coverUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXnpm-WbCCbNki5CwW3rSvH_62zoFdBFUQDJv1g3UGDpJn5p6fqIwBqGECcgG7wm_NR70f_E3RzXKr1QjaND5D4qOzEz05luJsB6Xo6w&s",
+    "createdAt": "2026-07-05T15:09:45.142Z"
+  },
+  {
+    "id": "local_added_1784045519200",
+    "title": "Homebond",
+    "category": "Bollywood",
+    "status": "Plan to Watch",
+    "genre": "General",
+    "rating": 10,
+    "coverUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ-3EXSFWQ7ZerCso0FReQb404bzqMugIRKmsGDXJ5IMfXPymAeYIE7171q6fBLDFfV3406LBZToQxZ5ucBQHn1pa4araOMi1fDvIyPvg&s=10",
+    "createdAt": "2026-07-14T16:11:59.200Z",
+    "releaseDate": "2025-07-01"
+  },
+  {
+    "id": "local_added_1784045290387",
+    "title": "Skater girl",
+    "category": "Bollywood",
+    "status": "Completed",
+    "genre": "General",
+    "rating": 10,
+    "coverUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7IY-EG0IKN-sibNSHdHI5kYW_2H21jIefZD7J0LtlOYtu7ez-QFQJT7FiXUC4O_KHcb4Y5fNHS0DJV2CYBaVZYwy2sAD2vVh3CToIzt0&s=10",
+    "createdAt": "2026-07-14T16:08:10.387Z",
+    "releaseDate": "2021-07-01"
+  },
+  {
+    "id": "local_added_1784045186919",
+    "title": "pritam and pedro",
+    "category": "Bollywood",
+    "status": "Completed",
+    "genre": "General",
+    "rating": 10,
+    "coverUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRb3XcEx6dMxULmnZ1mDIKryWLV2z_SsQ3OIygtyvdiDt0dsIyFqiA-rgq988ZQVlhPQCowrFR8wuGm6eeJKyNeICQAhVoy7sdctnLZZbaU&s=10",
+    "createdAt": "2026-07-14T16:06:26.919Z"
+  }
+]

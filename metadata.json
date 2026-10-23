@@ -1,0 +1,8 @@
+{
+  "name": "WatchList",
+  "description": "Personal media tracking application for Anime, Bollywood, Hollywood, and Web Series with status filters, ratings, and cover art.",
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ],
+  "permissions": []
+}
